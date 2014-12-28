@@ -20,6 +20,7 @@ import com.thermostat.server.actuation.GpioMotorizedValveActuator;
 import com.thermostat.server.configuration.Configuration;
 import com.thermostat.server.configuration.ConfigurationException;
 import com.thermostat.server.temperature.OneWireTemperatureSensor;
+import com.thermostat.server.temperature.SensorTagTemperatureSensor;
 import com.thermostat.server.temperature.TemperatureSensor;
 
 /**
@@ -37,6 +38,8 @@ public class ZoneRegistryPropertiesFile implements ZoneRegistry {
 
 	private static final String ZONE_ACTUATOR_ID_PROPERTY_NAME = "actuator.id";
 
+	private static final String ZONE_SENSOR_TYPE_PROPERTY_NAME = "sensor.type";
+	
 	private static final String ZONE_SENSOR_ID_PROPERTY_NAME = "sensor.id";
 	
 	private static final String ZONE_SENSOR_CORRECTION_PROPERTY_NAME = "sensor.correction";
@@ -44,6 +47,10 @@ public class ZoneRegistryPropertiesFile implements ZoneRegistry {
 	private static final String ACTUATOR_TYPE_GPIO_RELAY = "GPIO_RELAY";
 
 	private static final String ACTUATOR_TYPE_GPIO_MOTORIZED_VALVE = "GPIO_MOTORIZED_VALVE";
+
+	private static final String SENSOR_TYPE_W1_THERM = "W1_THERM";
+
+	private static final String SENSOR_TYPE_TI_SENSORTAG = "TI_SENSORTAG";
 
 	private Map<String, ZoneManager> zoneConfigMap = new HashMap<String, ZoneManager>();
 	
@@ -78,13 +85,21 @@ public class ZoneRegistryPropertiesFile implements ZoneRegistry {
 				}
 				
 				// Read temperature sensor configuration
+				TemperatureSensor sensor = null;
 				String sensorId = p.getProperty(ZONE_SENSOR_ID_PROPERTY_NAME);
 				if (sensorId == null) {
 					throw new ConfigurationException("Property " + ZONE_SENSOR_ID_PROPERTY_NAME + " not found in " + zoneConfFile);
 				}
-				String t = p.getProperty(ZONE_SENSOR_CORRECTION_PROPERTY_NAME);
-				float temperatureCorrection = t == null ? 0.0f : Float.parseFloat(t);
-				TemperatureSensor sensor = new OneWireTemperatureSensor(sensorId, temperatureCorrection);
+				String sensorType = p.getProperty(ZONE_SENSOR_TYPE_PROPERTY_NAME);
+				if (sensorType == null) {
+					throw new ConfigurationException("Property " + ZONE_SENSOR_TYPE_PROPERTY_NAME + " not found in " + zoneConfFile);
+				} else if (sensorType.equalsIgnoreCase(SENSOR_TYPE_W1_THERM)) {
+					String t = p.getProperty(ZONE_SENSOR_CORRECTION_PROPERTY_NAME);
+					float temperatureCorrection = t == null ? 0.0f : Float.parseFloat(t);
+					sensor = new OneWireTemperatureSensor(sensorId, temperatureCorrection);
+				} else if (sensorType.equalsIgnoreCase(SENSOR_TYPE_TI_SENSORTAG)) {
+					sensor = new SensorTagTemperatureSensor(sensorId);
+				}
 
 				ZoneManager zoneManager = new ZoneManager(name, actuator, sensor);
 				zoneConfigMap.put(zoneManager.getZoneName(), zoneManager);
