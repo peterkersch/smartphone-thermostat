@@ -21,7 +21,7 @@ public class ZoneManager extends Thread {
 
 	private static Logger logger = Logger.getLogger(ZoneManager.class.getSimpleName());
 
-	private static final long DEFAULT_UPDATE_PERIOD_SEC = 15;
+	private static final long DEFAULT_UPDATE_PERIOD_SEC = 60;
 	
 	private static final long BOOST_TIMEOUT_SEC = 60*20;
 
