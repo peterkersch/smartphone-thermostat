@@ -1,22 +1,39 @@
+Raspberry Pi OS install and configuration:
 - Format SD card: https://www.sdcard.org/downloads/formatter_4/
-- Load latest Raspbian image
-    - http://www.raspberrypi.org/downloads
-    - http://sourceforge.net/projects/win32diskimager/
-- Configure sshd, hostname, passwd, etc.
-- add modules to be loaded automatically to /etc/modules
+- Unzip the content of the latest NOOBS image to the SD card
+    - from http://www.raspberrypi.org/downloads
+- Plug in SD card, keyboard, monitor, WiFi and BTLE dongles into the Raspberry Pi 
+- Install Raspbian
+- Enable sshd, set up hostname, change password, etc.
+- Add modules to be loaded automatically to /etc/modules
     - ipv6, w1-therm, w1-gpio
 
-- Configure WiFi password
-    - wpa_passphrase "wifi_ssid" "wifi_password"
-    - copy output to /etc/wpa_supplicant/wpa_supplicant.conf
-    - TODO: passwords shorter than 8 characters are not supported by this setup
+Enable WiFi:
+    add the following lines to "/etc/wpa_supplicant/wpa_supplicant.conf":
+    network={
+        ssid="myssid"
+        psk="mypasswd"
+    }
+    TODO: passwords shorter than 8 characters are not supported by this setup
 
+You can disconnect monitor and keyboard at this point and continue remotely via ssh
+
+Update OS:
+    sudo apt-get update
+    sudo apt-get upgrade
+
+Enable Bluetooth LE (required for SensorTag reading):
+    see http://www.elinux.org/RPi_Bluetooth_LE
+    Notes:
+    use 5.26 bluez version instead of 5.4
+    add "LDFLAGS=-lrt " before the ./configure command
+    Note: the python wrapper needs to be compiled with 5.4 Bluez
+    but the compiled binary works well with 5.26 Bluez as well
+
+Optional Bluetooth RFCOMM suport:
+- Un-comment Bluetooth RFCOM support in pom.xml and in src/main/java/com/thermostat/server/protocol/ThermostatListenServerFactory.java
 - install drivers for Bluetooth device (https://www.modmypi.com/blog/installing-the-raspberry-pi-nano-bluetooth-dongle)
     - sudo apt-get install bluetooth bluez-utils blueman
-- Install latest version of bluez (http://www.bluez.org/)
-    - sudo apt-get install libglib2.0-dev libusb-dev libdbus-1-dev libudev-dev libical-dev libreadline-dev systemd
-    - ./configure
-    - make install
 - install BlueCove Java native library
     - download jar and sources:
         - https://bluecove.googlecode.com/files/bluecove-gpl-2.1.0-sources.tar.gz
