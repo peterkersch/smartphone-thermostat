@@ -23,7 +23,7 @@ public class ThermostatListenServerFactory {
 		try {
 			servers.add(ListenServerBluecove.getInstance());
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Error when initializing Bluetooth listen server", e);
+			logger.log(Level.WARNING, "Error when initializing Bluetooth listen server", e);
 		}
 		try {
 			servers.add(ListenServerIP.getInstance());
