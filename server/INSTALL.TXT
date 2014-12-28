@@ -1,0 +1,34 @@
+- Format SD card: https://www.sdcard.org/downloads/formatter_4/
+- Load latest Raspbian image
+    - http://www.raspberrypi.org/downloads
+    - http://sourceforge.net/projects/win32diskimager/
+- Configure sshd, hostname, passwd, etc.
+- add modules to be loaded automatically to /etc/modules
+    - ipv6, w1-therm, w1-gpio
+
+- Configure WiFi password
+    - wpa_passphrase "wifi_ssid" "wifi_password"
+    - copy output to /etc/wpa_supplicant/wpa_supplicant.conf
+    - TODO: passwords shorter than 8 characters are not supported by this setup
+
+- install drivers for Bluetooth device (https://www.modmypi.com/blog/installing-the-raspberry-pi-nano-bluetooth-dongle)
+    - sudo apt-get install bluetooth bluez-utils blueman
+- Install latest version of bluez (http://www.bluez.org/)
+    - sudo apt-get install libglib2.0-dev libusb-dev libdbus-1-dev libudev-dev libical-dev libreadline-dev systemd
+    - ./configure
+    - make install
+- install BlueCove Java native library
+    - download jar and sources:
+        - https://bluecove.googlecode.com/files/bluecove-gpl-2.1.0-sources.tar.gz
+        - http://downloads.sourceforge.net/project/bluecove/BlueCove/2.1.0/bluecove-2.1.0.jar
+    - install pre-requisities
+        - sudo ap-get install ant libbluetooth-dev
+    - extract sources (bluecove-gpl-2.1.0)
+    - copy jar to ../bluecove/target/bluecove-2.1.0-SNAPSHOT.jar
+    - build native library for arm
+        - ant all
+    - install native library into the local maven repository
+        - mvn install:install-file -Dfile=bluecove-gpl-2.1.0-SNAPSHOT.jar -DgroupId=net.sf.bluecove -DartifactId=bluecove_linux -Dversion=2.1.0 -Dpackaging=jar
+
+- build server code
+    - mvn clean install

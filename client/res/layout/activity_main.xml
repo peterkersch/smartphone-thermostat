@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="@dimen/padding_main_view" >
+
+	<com.blackbird.thermostat.gui.StateSelector
+	    android:id="@+id/stateSelector"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:orientation="horizontal"
+	    android:padding="@dimen/padding_main_view" >
+	
+	</com.blackbird.thermostat.gui.StateSelector>
+		
+	<com.blackbird.thermostat.gui.ZoneControl 
+	    android:id="@+id/zoneControl"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+        android:layout_below="@id/stateSelector"
+	    android:padding="@dimen/padding_main_view" >
+	</com.blackbird.thermostat.gui.ZoneControl>
+
+	<TextView
+        android:id="@+id/status1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/zoneControl"
+        android:text="@string/empty" />
+		
+	<Button
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+        android:onClick="sendStateUpdate"
+        android:text="@string/refresh_button" />
+	
+</RelativeLayout>
