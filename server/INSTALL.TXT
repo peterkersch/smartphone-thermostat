@@ -29,6 +29,10 @@ Enable Bluetooth LE (required for SensorTag reading):
     add "LDFLAGS=-lrt " before the ./configure command
     Note: the python wrapper needs to be compiled with 5.4 Bluez
     but the compiled binary works well with 5.26 Bluez as well
+    Enable Bluetooth device automatically after startup:
+        sudo mcedit /etc/udev/rules.d/10-local.rules
+        add this content:
+        ACTION=="add", KERNEL=="hci0", RUN+="/usr/local/bin/hciconfig hci0 up"
 
 Optional Bluetooth RFCOMM suport:
 - Un-comment Bluetooth RFCOM support in pom.xml and in src/main/java/com/thermostat/server/protocol/ThermostatListenServerFactory.java
@@ -47,5 +51,14 @@ Optional Bluetooth RFCOMM suport:
     - install native library into the local maven repository
         - mvn install:install-file -Dfile=bluecove-gpl-2.1.0-SNAPSHOT.jar -DgroupId=net.sf.bluecove -DartifactId=bluecove_linux -Dversion=2.1.0 -Dpackaging=jar
 
-- build server code
+Build server code
     - mvn clean install
+
+Configure server
+    - create log directory:
+        mkdir /var/log/thermostat/
+    - symlink (or copy) conf directory:
+        sudo ln -s /home/pi/smartphone-thermostat/server/conf/ /etc/thermostat
+    - copy thermostat.sh to /etc/init.d
+    - enable auto start after reboot:
+        sudo update-rc.d thermostat.sh defaults
