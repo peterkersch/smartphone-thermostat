@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import com.thermostat.protocol.data.BroadcastEvent;
 import com.thermostat.protocol.data.ResidentState;
 import com.thermostat.protocol.data.ResidentStatusInfo;
+import com.thermostat.server.configuration.Configuration;
 
 /**
  * Logs resident status info received in state update messages. 
@@ -30,7 +31,7 @@ public class ResidentStatusLogger {
 	}
 	
 	public ResidentStatusLogger() throws IOException {
-		stream = new PrintStream(LOG_FILE_NAME);
+		stream = new PrintStream(Configuration.getLogPath(LOG_FILE_NAME));
 	}
 	
 	public void write(String fingerprint, ResidentStatusInfo status) {
