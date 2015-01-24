@@ -22,11 +22,11 @@ public class SensorTagTemperatureSensor implements TemperatureSensor {
 
 	private static final String SCRIPT_PATH = "/usr/local/lib/python2.7/site-packages/sensortag.py";
 	
-	private static final int REFRESH_PERIOD_SEC = 60;
+	private static final int REFRESH_PERIOD_SEC = 120;
 	
 	private static final double REFRESH_PERIOD_MAX_JITTER = 0.2;
 	
-	private static final int REFRESH_TIMEOUT_SEC = 300;
+	private static final int REFRESH_TIMEOUT_SEC = 600;
 	
 	private Float lastTemperature;
 	
