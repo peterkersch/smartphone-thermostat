@@ -11,7 +11,7 @@ import com.thermostat.server.temperature.TemperatureHistory;
  */
 public class GpioRelayActuator extends Actuator {
 
-	private static final double DEFAULT_HISTERESIS = 0.3;
+	private static final double DEFAULT_HISTERESIS = 0.1;
 	
 	private double histeresis;
 	
