@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:          thermostat
-# Required-Start:    $network $local_fs $ntp
+# Required-Start:    $network $local_fs
 # Required-Stop:
 # Should-Start:
 # Default-Start:     2 3 4 5

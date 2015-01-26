@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.security.GeneralSecurityException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,8 @@ import com.thermostat.server.security.ThermostatServerSecurityManager;
 import com.thermostat.technology.IpDiscoveryProtocol;
 
 public class IpDiscoveryManager extends Thread {
+
+	private final static int RETRY_SECONDS = 10;
 
 	private static Logger logger = Logger.getLogger(IpDiscoveryManager.class.getSimpleName());
 
@@ -32,8 +35,17 @@ public class IpDiscoveryManager extends Thread {
 		socket = new MulticastSocket(address);
 		socket.setTimeToLive(1);
 		discoveryAddress = InetAddress.getByName(IpDiscoveryProtocol.MULTICAST_DISCOVERY_ADDRESS_IPV4);
-		socket.joinGroup(discoveryAddress);
-		
+		for (boolean networkAvailable = false; !networkAvailable; ) {
+			try {
+				socket.joinGroup(discoveryAddress);
+				networkAvailable = true;
+			} catch (SocketException e) {
+				logger.log(Level.WARNING, "Network not yet available, retrying in " + RETRY_SECONDS + " sec", e);
+				try {
+					Thread.sleep(RETRY_SECONDS * 1000);
+				} catch (InterruptedException ei) {}
+			}
+		}
 		// Create reply packet
 		String fingerprintString = ThermostatServerSecurityManager.getInstance().getPublicKeyFingerprint();
 		byte [] fingerprintBytes = HexUtils.hexToByte(fingerprintString);
