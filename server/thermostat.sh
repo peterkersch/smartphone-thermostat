@@ -1,5 +1,15 @@
 #!/bin/bash
 
+### BEGIN INIT INFO
+# Provides:          thermostat
+# Required-Start:    $network $local_fs $ntp
+# Required-Stop:
+# Should-Start:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Start thermostat server
+### END INIT INFO
+
 SERVICE_NAME=thermostat
 LOG_DIR=/var/log/${SERVICE_NAME}
 CONF_DIR=/etc/${SERVICE_NAME}
@@ -16,7 +26,8 @@ case $1 in
             mv ${SERVICE_NAME}.log ${SERVICE_NAME}_${NOW}.log 2> /dev/null
             mv status.txt status_${NOW}.txt 2> /dev/null
             # start Java process
-            nohup java -Dpath.log="${LOG_DIR}" -Dpath.conf="${CONF_DIR}" -jar $JAR_PATH >> ${SERVICE_NAME}.log 2>&1 &
+            nohup java -Dpath.log="${LOG_DIR}" -Dpath.conf="${CONF_DIR}" \
+                -jar $JAR_PATH >> ${SERVICE_NAME}.log 2>&1 &
                         echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started"
         else
